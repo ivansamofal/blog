@@ -40,7 +40,6 @@ include_once('header.php');
 					</p>
 					</div>
 					<?endif;?>
-<textarea name="" id="" placeholder="Введите комментарий"></textarea>
 				</div>
 				<? if (count($comm['text_comm']) > 0):?>
 				<h2 class="buttonComments" rel="0">
