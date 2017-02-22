@@ -101,7 +101,7 @@ $cats = $menuObj->getCategories($mysqli);
         
         <div id="register_box">
         	<? if (!$_SESSION['id']): ?>
-			Already Registered? Click <a href="#" class="signup">Here</a> | <a href="#" class="new_reg">Register</a>
+			Already Registered? Click <a href="#" class="signup">Here</a> | <a href="register.php" class="new_reg">Register</a>
 			<?endif;?>
         </div>
     </div>

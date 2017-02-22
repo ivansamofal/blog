@@ -72,10 +72,15 @@ class to_db2 {
 
         public function authorization ($mysqli) {
 
-                if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['login']) && !empty($_POST['password'])) {
-            $mysqli->query("SET names 'cp1251'");
-            $login = $mysqli->query("SELECT * FROM `users` WHERE `email` = '{$_POST['login']}';");
-            $res = $login->fetch_assoc();
+            if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['login']) && !empty($_POST['password'])) {
+			$enterLogin = htmlspecialchars(trim($_POST['login']));
+            //$login = $mysqli->query("SELECT * FROM `users` WHERE `email` = '{$_POST['login']}';");		
+			$login = $mysqli->prepare("SELECT * FROM `users` WHERE `email` = ?");
+			$login->bind_param("s", $enterLogin);
+			$login->execute();
+			$result = $login->get_result();
+			$res = $result->fetch_assoc();
+           // $res = $login->fetch_assoc();
 
             if ($res['email'] != $_POST['login'] || $res['password'] != $_POST['password']) {
                 if ($res['email'] == $_POST['login']) {
@@ -97,11 +102,11 @@ class to_db2 {
 
 
     public function create_article ($mysqli) {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['title']) && !empty($_POST['text'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['title']) && !empty($_POST['text'])) {
 
     $title = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['title'])));
-    $text = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['text'])));
-     $author = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['author'])));
+    $text = $mysqli->real_escape_string(trim($_POST['text']));
+    $author = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['author'])));
     $date = date(Y . '-' . m .'-' . d);
     $time = date(G . ':' . i . ':' . s);
     $name_file = trim(mb_strtolower($_FILES['file']['name']));
@@ -115,14 +120,26 @@ class to_db2 {
 	}
 	$category = $_POST['category'];
 //header("Location: index.php");
+	if($name_file && mb_strlen($name_file) > 3){
+	$image = new SimpleImage();
     move_uploaded_file($tmp_name, "img/$name_file");
-    
+	$image->load("img/$name_file");
+	$image->resize(600, 200);
+	$image->save("img/original_$name_file");
+	$image->load("img/$name_file");
+	$image->resize(60, 40);
+	$image->save("img/avatars/{$_SESSION['id']}/mini_$name_file");
+    }
     if(!empty($_POST['title']) && !empty($_POST['text'])) {
-//$mysqli->query("SET names 'cp1251'");
         $mysqli->query("SET NAMES 'utf8'"); 
         $mysqli->query("SET CHARACTER SET 'utf8'");
         $mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
-		$result = $mysqli->query("INSERT INTO `articles` VALUES (NULL, '$title', '$text', '$author', '$time', '$date', '$name_file', '0', '0', '$alias', '$idCat');");
+			$createArticle = $mysqli->prepare("INSERT INTO `articles` VALUES (NULL, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?)");
+			$createArticle->bind_param("ssssssss", $title, $text, $author, $time, $date, $name_file, $alias, $idCat);
+			$createArticle->execute();
+			$result = $createArticle->get_result();
+			
+		//$result = $mysqli->query("INSERT INTO `articles` VALUES (NULL, '$title', '$text', '$author', '$time', '$date', '$name_file', '0', '0', '$alias', '$idCat');");
 		
         header("Location: index.php");
 }
@@ -164,8 +181,4 @@ class to_db2 {
 		}
 	}
 
-
-
 }
-
-

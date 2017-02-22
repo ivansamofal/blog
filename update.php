@@ -9,13 +9,13 @@ if (isset($_GET['id'])) {
 	$id = htmlspecialchars($mysqli->real_escape_string($_GET['id']));
 }
 /* достаем статью для редактирования из базы */
-//$mysqli->query("SET names 'cp1251'");
-		//$mysqli->query("SET NAMES 'utf8'"); 
-		//$mysqli->query("SET CHARACTER SET 'utf8'");
-		//$mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
-$result = $mysqli->query("SELECT * FROM `articles` WHERE `id` = $id");
-$row = $result->fetch_array();
-//var_dump($row);
+//$result = $mysqli->query("SELECT * FROM `articles` WHERE `id` = $id");
+
+			$resultSelect = $mysqli->prepare("SELECT * FROM `articles` WHERE `id` = ?");
+			$resultSelect->bind_param("s", $id);
+			$resultSelect->execute();
+			$resultSelect = $resultSelect->get_result();
+$row = $resultSelect->fetch_array();
 /* конец извлечения статьи */
 
 /* сохранение обновленной статьи*/
@@ -37,7 +37,7 @@ if ($_POST['title'] != '' && $_POST['text'] != '') {
 	$title = $mysqli->real_escape_string(htmlspecialchars(mb_convert_encoding($_POST['title'], 'cp1251', mb_detect_encoding($_POST['title']))));
 	//echo $title;
 	
-	$text = $mysqli->real_escape_string(htmlspecialchars(mb_convert_encoding($_POST['text'], 'cp1251', mb_detect_encoding($_POST['text']))));
+	$text = $mysqli->real_escape_string(mb_convert_encoding($_POST['text'], 'cp1251', mb_detect_encoding($_POST['text'])));
 	$id_author = $mysqli->real_escape_string(htmlspecialchars(mb_convert_encoding($_POST['author'], 'cp1251', mb_detect_encoding($_POST['author']))));
 
 	$mysqli->query("SET names 'cp1251'");

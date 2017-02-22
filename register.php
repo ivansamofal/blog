@@ -1,7 +1,6 @@
 <?
 include_once('config.php');
 		
-
 if (!empty($_POST['login']) && !empty($_POST['login']) && !empty($_FILES['file']['name'])) {
 		//$login = $_POST['login'];
 		($_POST['login']) ? $login = htmlspecialchars($mysqli->real_escape_string(trim($_POST['login']))) : '';

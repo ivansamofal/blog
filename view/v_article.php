@@ -13,7 +13,8 @@ include_once('header.php');
 
 					</div>
 					<h1><?=$row['title']?></h1>
-					<img src="img/<?=$row['img']?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/>
+					<? $image = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>
+					<img src="img/<?=$image?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/>
 					<p><?=$row['text']?></p>
 					<?
 					$idArticle = $mysqli->real_escape_string(trim($_GET['id']));
@@ -21,7 +22,7 @@ include_once('header.php');
 					$getUserId = $getUserId->fetch_assoc();
 					$getUserId = $getUserId['id_author'];
 					?>
-					<?if($getUserId === $_SESSION['id']):?>
+					<?if($getUserId == $_SESSION['id']):?>
 					<p><a href="update.php?id=<?=$id?>">Редактировать</a>    <a href="delete.php?id=<?=$id?>">Удалить</a></p>
 					<?endif;?>
 					<div class="like <?if($isActive) echo 'active'; ?>" data-id="<?=$id?>" data-usr="<?=$_SESSION['id']?>"><span class="counter"><?=$row['count_like']?></span> 
