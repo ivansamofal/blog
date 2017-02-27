@@ -1132,3 +1132,40 @@ body {
 	text-align: center;
 }
 
+
+
+
+
+
+/* mobile */
+
+@media screen and (max-width: 920px){
+#templatemo_main{
+	width: 100%;
+}
+}
+
+@media screen and (max-width: 720px){
+.image_wrapper img{
+	width: 65%;
+}
+}
+@media screen and (max-width: 1000px){
+#templatemo_menu{
+	width: 100%;
+}
+#templatemo_wrapper{
+	width: 100%;
+}
+#site_title{
+	width: 50%;
+}
+#templatemo_sidebar, .sidebar_box{
+	width: 25%;
+}
+}
+@media screen and (max-width: 940px){
+#templatemo_header{
+	width: 100%;
+}
+}

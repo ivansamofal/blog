@@ -15,7 +15,7 @@ if (isset($_GET['id'])) {
 			$resultSelect->bind_param("s", $id);
 			$resultSelect->execute();
 			$resultSelect = $resultSelect->get_result();
-$row = $resultSelect->fetch_array();
+			$row = $resultSelect->fetch_array();
 /* конец извлечения статьи */
 
 /* сохранение обновленной статьи*/

@@ -1,12 +1,24 @@
 <?
 mb_internal_encoding("UTF-8");
-(isset($_GET['cat'])) ? $cat = htmlspecialchars($mysqli->real_escape_string(trim($_GET['cat']))) : header("Location: index.php");
+//для статей конкретной категории
+(isset($_GET['cat'])) ? $cat = htmlspecialchars($mysqli->real_escape_string(trim($_GET['cat']))) : "";
+if($_GET['cat']){
 	$getIDCat = $mysqli->query("SELECT `id_cat`, `name` FROM `categories` WHERE `alias_cat` = '$cat'");
 	$getIDCat = $getIDCat->fetch_assoc();
 	$nameCat = $getIDCat['name'];
 	$getIDCat = $getIDCat['id_cat'];
 	$selectCats = $mysqli->query("SELECT * FROM `articles` WHERE `category` = '$getIDCat'");
-
+}
+//для результатов поиска
+if($_GET['query']){
+		$searchQuery = ($_GET['query']) ? '%' . $mysqli->real_escape_string(trim($_GET['query'])) . '%' : '';
+		//var_dump($searchQuery);
+		$getSearch = $mysqli->prepare("SELECT * FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ?");
+		$getSearch->bind_param("ss", $searchQuery, $searchQuery);
+		$getSearch->execute();
+		$getSearch = $getSearch->get_result();
+		$selectCats = $getSearch;
+		}
 include_once('view/header.php');
 ?>
 <div id="templatemo_main">

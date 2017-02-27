@@ -1,3 +1,8 @@
+<?
+		if($_POST['query']){	
+		header("Location: articles.php?query={$_POST['query']}");
+		}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -70,11 +75,13 @@ $cats = $menuObj->getCategories($mysqli);
                 <span class="tagline"><?=$titleSite?></span>
             </a>
         </div> <!-- end of site_title -->
+		
+	
         
         <div id="search_box">
-            <form action="#" method="get">
-                <input type="text" value="Поиск..." name="q" size="10" id="searchfield" title="searchfield" onfocus="clearText(this)" onblur="clearText(this)" />
-              <input type="submit" name="Search" value="Search" id="searchbutton" title="Search" />
+            <form action="#" method="post">
+                <input type="text" placeholder="Поиск..." name="query" size="10" id="searchfield" title="Поиск" />
+              <input type="submit" name="Search" placeholder="Search" id="searchbutton" title="Искать" />
             </form>
         </div>
     
