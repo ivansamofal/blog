@@ -184,5 +184,16 @@ class to_db2 {
 			return $year . ' года';
 		}
 	}
+	
+		public function getCommentsNames($comment){
+			$lastSymbol = mb_substr($comment, -1); 
+		if($lastSymbol > 4 && $lastSymbol < 10 || $lastSymbol == 0 || $comment == 11 || $comment == 12 || $comment == 13 || $comment == 14){
+			return $comment . ' комментариев';
+		}elseif($lastSymbol == 1){
+			return $comment . ' комментарий';
+		}else{
+			return $comment . ' комментария';
+		}
+	}
 
 }

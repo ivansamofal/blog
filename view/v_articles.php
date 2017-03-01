@@ -28,10 +28,15 @@ include_once('view/header.php');
 				<div class="post_box">
 					<? $imagePost = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>
 					<h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>		
-					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$cat?>"><?=$nameCat?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> | Теги: 
+					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$cat?>"><?=$nameCat?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> 
+					<?if(count($textTags) > 1):?>
+					| Теги: 
 					<? foreach($textTags as $tag):?>
 					<a href="articles.php?query=<?=trim($tag)?>"><?=trim($tag)?></a>
 					<?endforeach;?>
+					<?else:?>
+					| Нет тегов к данной статье:(
+					<?endif;?>
 					</div>
 					<div class="image_wrapper"><a href="article.php?id=<?=$row['id']?>"><img src="img/<?=$imagePost?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/></a></div>
 				  <p align="justify"><?=$obj1->getDescription($row['text'])?>

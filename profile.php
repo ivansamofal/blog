@@ -224,7 +224,7 @@ $b = 'это новая статья';
 	</div>
 	<div class="commentsProfile">
 		<? if(count($Comments['text']) > 0):?>
-			<h2>Вы написали <?=count($Comments['text'])?> комментариев</h2>
+			<h2>Вы написали <?=$obj1->getCommentsNames(count($Comments['text']))?></h2>
 				<ul>
 				<? for($i = 0; $i < count($Comments['text']); $i++):?>
 					<li class="oneCommentProfile"><?=$Comments['text'][$i]?> <span><?=$Comments['date'][$i]?></span> в <span><?=mb_substr($Comments['time'][$i], 0, 5)?></span>

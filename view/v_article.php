@@ -9,7 +9,7 @@ include_once('header.php');
 					<div class="post_inf">
 						<span><?=$row['date']?> в <?=mb_substr($row['time'], 0, 5)?></span><br />
 						<span class="posn"><?=$row['name']?></span><br />
-						<span class="posc"><?=count($comm['text_comm'])?> комментариев</span>
+						<span class="posc"><?=$obj1->getCommentsNames(count($comm['text_comm']))?></span>
 
 					</div>
 					<h1><?=$row['title']?></h1>
@@ -52,7 +52,7 @@ include_once('header.php');
 				</div>
 				<? if (count($comm['text_comm']) > 0):?>
 				<h2 class="buttonComments" rel="0">
-					<?=count($comm['text_comm'])?> комментариев
+					<?=$obj1->getCommentsNames(count($comm['text_comm']))?>
 				</h2>
 				
 				<div class="comments">
