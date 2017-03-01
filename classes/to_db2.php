@@ -113,6 +113,7 @@ class to_db2 {
     $tmp_name = $_FILES['file']['tmp_name'];
 	$alias = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['alias'])));
 	$getCategs = $mysqli->query("SELECT * FROM `categories`");
+	$tags = ($_POST['tags']) ? $mysqli->real_escape_string(htmlspecialchars(trim($_POST['tags']))) : '';
 	while($getRow = $getCategs->fetch_assoc()){
 	if ($getRow['name'] === $_POST['category']){
 		$idCat = $getRow['id_cat'];
@@ -123,8 +124,11 @@ class to_db2 {
 	if($name_file && mb_strlen($name_file) > 3){
 	$image = new SimpleImage();
     move_uploaded_file($tmp_name, "img/$name_file");
+	//$image->load("img/$name_file");
+	//$image->resize(600, 200);
+	//$image->save("img/index_$name_file");
 	$image->load("img/$name_file");
-	$image->resize(600, 200);
+	$image->resize(600, 400);
 	$image->save("img/original_$name_file");
 	$image->load("img/$name_file");
 	$image->resize(60, 40);
@@ -134,8 +138,8 @@ class to_db2 {
         $mysqli->query("SET NAMES 'utf8'"); 
         $mysqli->query("SET CHARACTER SET 'utf8'");
         $mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
-			$createArticle = $mysqli->prepare("INSERT INTO `articles` VALUES (NULL, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?)");
-			$createArticle->bind_param("ssssssss", $title, $text, $author, $time, $date, $name_file, $alias, $idCat);
+			$createArticle = $mysqli->prepare("INSERT INTO `articles` VALUES (NULL, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?)");
+			$createArticle->bind_param("sssssssss", $title, $text, $author, $time, $date, $name_file, $alias, $idCat, $tags);
 			$createArticle->execute();
 			$result = $createArticle->get_result();
 			

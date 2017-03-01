@@ -18,6 +18,7 @@ $getCategs = $mysqli->query("SELECT * FROM `categories`");
 </select>
 <textarea placeholder="enter text" name="text"></textarea>
 <p><span><?=$er2?></span></p>
+<input type="text" placeholder="Введите теги через запятую" name="tags" value="" class="tags">
 <input type="hidden" placeholder="enter author" value="<?=$_SESSION['id']?>" name="author">
 <input type="submit" value="enter" class="buttonClick">
 <input type="file" name="file">

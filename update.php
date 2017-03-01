@@ -34,6 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 	
 	$getNumberCategory = $getNumberCategory['id_cat'];
 	($getNumberCategory) ? $isCat = ", `category` = '$getNumberCategory'" : $isCat = "";
+	
+	$tags = ($_POST['tags']) ? $mysqli->real_escape_string(htmlspecialchars(trim($_POST['tags']))) : $row['tags'];
+	
 	$tmp_name = $_FILES['file']['tmp_name'];
 	move_uploaded_file($tmp_name, "img/$file_name");
 }else {
@@ -41,15 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 }
 
 if ($_POST['title'] != '' && $_POST['text'] != '') {
-	$title = $mysqli->real_escape_string(htmlspecialchars(mb_convert_encoding($_POST['title'], 'cp1251', mb_detect_encoding($_POST['title']))));
-	
-	$text = $mysqli->real_escape_string(mb_convert_encoding($_POST['text'], 'cp1251', mb_detect_encoding($_POST['text'])));
+	$title = $mysqli->real_escape_string(htmlspecialchars($_POST['title']));
+	$text = $mysqli->real_escape_string(htmlspecialchars($_POST['text']));
 	$id_author = $mysqli->real_escape_string(htmlspecialchars(mb_convert_encoding($_POST['author'], 'cp1251', mb_detect_encoding($_POST['author']))));
-
-	$mysqli->query("SET names 'cp1251'");
-	$result = $mysqli->query("UPDATE `articles` SET `title` = '$title', `text` = '$text', `id_author` = '$id_author' $isImg $isCat WHERE `id` = $id");
-	//$img = $mysqli->query("INSERT INTO `images` VALUES (NULL, '$file_name', '$id');"); //add pictures
+	$result = $mysqli->query("UPDATE `articles` SET `title` = '$title', `text` = '$text', `id_author` = '$id_author' $isImg $isCat, `tags` = '$tags' WHERE `id` = $id");
+	//$img = $mysqli->query("INSERT INTO `images` VALUES (NULL, '$file_name', '$id');"); 
 	
+	//add pictures
 	$img = $mysqli->prepare("INSERT INTO `images` VALUES (NULL, ?, ?);");
 	$img->bind_param("ss", $file_name, $id);
 	$img->execute();
@@ -81,6 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$getNameCat = $getNameCat->fetch_assoc();
 			
 	$getNameCat = $getNameCat['name'];
+	$textTags = explode(',', $row['tags']);
+	var_dump($textTags);
 ?>
 <?
 include_once('view/v_edit.php');

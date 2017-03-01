@@ -12,7 +12,6 @@ if($_GET['cat']){
 //для результатов поиска
 if($_GET['query']){
 		$searchQuery = ($_GET['query']) ? '%' . $mysqli->real_escape_string(trim($_GET['query'])) . '%' : '';
-		//var_dump($searchQuery);
 		$getSearch = $mysqli->prepare("SELECT * FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ?");
 		$getSearch->bind_param("ss", $searchQuery, $searchQuery);
 		$getSearch->execute();
@@ -25,10 +24,15 @@ include_once('view/header.php');
 
 	    <div id="templatemo_content">
             <? while ($row=$selectCats->fetch_assoc()):?>
+			<? $textTags = explode(',', $row['tags']);?>
 				<div class="post_box">
 					<? $imagePost = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>
 					<h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>		
-					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$cat?>"><?=$nameCat?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> | Теги: <a href="#">Blog</a>, <a href="#">Templates</a>, <a href="#">Design</a>, <a href="#">Free</a></div>
+					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$cat?>"><?=$nameCat?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> | Теги: 
+					<? foreach($textTags as $tag):?>
+					<a href="articles.php?query=<?=trim($tag)?>"><?=trim($tag)?></a>
+					<?endforeach;?>
+					</div>
 					<div class="image_wrapper"><a href="article.php?id=<?=$row['id']?>"><img src="img/<?=$imagePost?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/></a></div>
 				  <p align="justify"><?=$obj1->getDescription($row['text'])?>
 				  <a href="article.php?id=<?=$row['id']?>" class="continue">Продолжить ...</a></p>

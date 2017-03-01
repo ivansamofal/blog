@@ -27,7 +27,7 @@ $getCategs = $mysqli->query("SELECT * FROM `categories`");
 
 <textarea class="text-create" class="edit" placeholder="enter text" name="text"><?=$text_con?></textarea>
 <input type="hidden" placeholder="enter author" name="author" value="<?=$author_con?>">
-
+<input type="text" placeholder="Введите теги через запятую" name="tags" value="<?=$row['tags']?>" class="tags">
 <input type="file" name="file">
 <input type="submit" value="Сохранить" class="create-submit">
 </form>
