@@ -18,21 +18,29 @@ include_once('header.php');
 					<p><?=$row['text']?></p>
 					<?
 					$idArticle = $mysqli->real_escape_string(trim($_GET['id']));
-					$getUserId = $mysqli->query("SELECT `id_author` FROM `articles` WHERE `id` = '$idArticle'");
-					$getUserId = $getUserId->fetch_assoc();
+					//$getUserId = $mysqli->query("SELECT `id_author` FROM `articles` WHERE `id` = '$idArticle'");
+					//$getUserId = $getUserId->fetch_assoc();
+					
+						$getUserId = $mysqli->prepare("SELECT `id_author` FROM `articles` WHERE `id` = ?");
+						$getUserId->bind_param("s", $idArticle);
+						$getUserId->execute();
+						$getUserId = $getUserId->get_result();
+						$getUserId = $getUserId->fetch_assoc();
+			
 					$getUserId = $getUserId['id_author'];
 					?>
 					<?if($getUserId == $_SESSION['id']):?>
 					<p><a href="update.php?id=<?=$id?>">Редактировать</a>    <a href="delete.php?id=<?=$id?>">Удалить</a></p>
 					<?endif;?>
-					<div class="like <?if($isActive) echo 'active'; ?>" data-id="<?=$id?>" data-usr="<?=$_SESSION['id']?>"><span class="counter"><?=$row['count_like']?></span> 
+					<div class="like <?if($isActive) echo 'active'; ?>" data-id="<?=$id?>" data-usr="<?=$_SESSION['id']?>"><span class="counter"><?=$row['count_like']?></span>  
 					</div>
+					<div class="hits"><span><?=$row['stat']?></span> просмотров</div>
 					<? if (count($url['foto']) > 0 ):?>
 					<div class="fotos">
 					<div id="fancy">
 					<? for($f = 0; $f < count($url['foto']); $f++): ?>
 					<?if($url['foto'][$f]):?>
-					<a href="img/<?=$url['foto'][$f]?>"><img src="img/<?=$url['foto'][$f]?>" alt=""></a>
+					<a href="img/<?=$url['foto'][$f]?>"><img src="img/<?=$url['foto'][$f]?>" alt="<?=$row['title']?>"></a>
 					<?endif;?>
 					<? endfor; ?>
 					</div>

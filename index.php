@@ -19,7 +19,7 @@ $years = new years($num);
 /*autorization */
 $obj1->authorization($mysqli);
  /* end autorization */
+ //вывод всех постов на главной с пагинацией
 $arr = $obj1->pagination1($mysqli);
-
 
 include ('view/v_index.php');

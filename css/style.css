@@ -454,10 +454,15 @@ background: #ccc;
 
 .like{
 	cursor:pointer;
-	width: 40px;
     height: 36px;
 	clear: both;
 	padding-top: 5px;
+	display: inline-block;
+	width: 10%;
+}
+.hits{
+	width: 30%;
+	display: inline-block;
 }
 .like span:hover, .like span{
 	background: url('../images/like.png') no-repeat;

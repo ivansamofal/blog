@@ -8,36 +8,29 @@ if(isset($_POST['submit'])){
 	if (isset($_POST['name'])){
 		$name = htmlspecialchars($mysqli->real_escape_string($_POST['name']));
 		$_SESSION['name'] = $name;
-		//$id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id']));
 		$newName = $mysqli->query("UPDATE `users` SET `name` = '$name' WHERE `id` = '$id'");
 	}
 	if (isset($_POST['surname'])){
 		$surname = htmlspecialchars($mysqli->real_escape_string($_POST['surname']));
-		//$id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id']));
 		$newName = $mysqli->query("UPDATE `users` SET `surname` = '$surname' WHERE `id` = '$id'");
 	}
 	if (isset($_POST['age'])){
 		$age = htmlspecialchars($mysqli->real_escape_string($_POST['age']));
-		//$id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id']));
 		$newName = $mysqli->query("UPDATE `users` SET `age` = '$age' WHERE `id` = '$id'");
 	}
 	if (isset($_POST['about'])){
 		$about = htmlspecialchars($mysqli->real_escape_string($_POST['about']));
-		//$id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id']));
 		$newName = $mysqli->query("UPDATE `users` SET `about` = '$about' WHERE `id` = '$id'");
 	}
 	if (isset($_POST['email'])){
 		$email = htmlspecialchars($mysqli->real_escape_string($_POST['email']));
-		//$id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id']));
 		$newName = $mysqli->query("UPDATE `users` SET `email` = '$email' WHERE `id` = '$id'");
 	}
 	if (isset($_POST['password'])){
 		$password = htmlspecialchars($mysqli->real_escape_string($_POST['password']));
-		//$id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id']));
 		$newName = $mysqli->query("UPDATE `users` SET `password` = '$password' WHERE `id` = '$id'");
 	}
 	if (isset($_FILES['file']['name']) && mb_strlen($_FILES['file']['name']) > 4 ){
-		//$id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id']));
 		$file_name = $_FILES['file']['name'];
 		if (mb_substr_count($file_name, ' ') > 0){ //если в названии файла имеются пробелы, меняем на '_'
 			$file_name = explode(' ', $file_name);
@@ -55,11 +48,24 @@ if(isset($_POST['submit'])){
 
 include_once('view/header.php');
 //достаем данные юзера
-$getMyProfile = $mysqli->query("SELECT * FROM `users` WHERE `id` = '$id'");
-$resultMyProfile = $getMyProfile->fetch_assoc();
+//$getMyProfile = $mysqli->query("SELECT * FROM `users` WHERE `id` = '$id'");
+//$resultMyProfile = $getMyProfile->fetch_assoc();
+
+			$getMyProfile = $mysqli->prepare("SELECT * FROM `users` WHERE `id` = ?");
+			$getMyProfile->bind_param("s", $id);
+			$getMyProfile->execute();
+			$getMyProfile = $getMyProfile->get_result();
+			$resultMyProfile = $getMyProfile->fetch_assoc();
+			
 
 //достаем список статей юзера
-$getMyProfile = $mysqli->query("SELECT * FROM `articles` WHERE `id_author` = '$id'");
+//$getMyProfile = $mysqli->query("SELECT * FROM `articles` WHERE `id_author` = '$id'");
+
+			$getMyProfile = $mysqli->prepare("SELECT * FROM `articles` WHERE `id_author` = ?");
+			$getMyProfile->bind_param("s", $id);
+			$getMyProfile->execute();
+			$getMyProfile = $getMyProfile->get_result();
+
 while($resultProfile = $getMyProfile->fetch_assoc()){
 	$arrArticles['id'][] = $resultProfile['id'];
 	$arrArticles['title'][] = $resultProfile['title'];
@@ -71,13 +77,23 @@ while($resultProfile = $getMyProfile->fetch_assoc()){
 	$arrArticles['like'][] = $resultProfile['count_like'];
 	$arrArticles['avatar'][] = $resultProfile['avatar'];
 }
-//var_dump($arrArticles);
 
-$getMyArticles = $mysqli->query("SELECT * FROM `articles` WHERE `id_author` = '$id'");
-$resultArticles = $getMyArticles->fetch_assoc();
-//var_dump($resultArticles);
+//$getMyArticles = $mysqli->query("SELECT * FROM `articles` WHERE `id_author` = '$id'");
+//$resultArticles = $getMyArticles->fetch_assoc();
 
-$getMyComments = $mysqli->query("SELECT * FROM `comments`  JOIN `articles`  ON `comments`.`id_article` = `articles`.`id` AND `articles`.`id_author` = '$id'");
+			$getMyArticles = $mysqli->prepare("SELECT * FROM `articles` WHERE `id_author` = ?");
+			$getMyArticles->bind_param("s", $id);
+			$getMyArticles->execute();
+			$getMyArticles = $getMyArticles->get_result();
+			$resultArticles = $getMyArticles->fetch_assoc();
+
+//$getMyComments = $mysqli->query("SELECT * FROM `comments`  JOIN `articles`  ON `comments`.`id_article` = `articles`.`id` AND `articles`.`id_author` = '$id'");
+
+			$getMyComments = $mysqli->prepare("SELECT * FROM `comments`  JOIN `articles`  ON `comments`.`id_article` = `articles`.`id` AND `articles`.`id_author` = ?");
+			$getMyComments->bind_param("s", $id);
+			$getMyComments->execute();
+			$getMyComments = $getMyComments->get_result();
+			//$getMyComments = $getMyComments->fetch_assoc();
 
 while($rowComment = $getMyComments->fetch_assoc()){
 	$Comments['text'][] = $rowComment['text_comm'];
@@ -87,7 +103,6 @@ while($rowComment = $getMyComments->fetch_assoc()){
 	$Comments['title'][] = $rowComment['title'];
 	$Comments['id_article'][] = $rowComment['id_article'];
 }
-//var_dump($Comments);
 
 
 /*
@@ -173,8 +188,6 @@ $b = 'это новая статья';
 ?>
 <div id="templatemo_main">
 	<div class="article" id="lcnt">
-<? //echo "я вижу вас, {$_SESSION['name']}";
-?>
 <div class="block oneProfile">
 <h1>Профиль пользователя <?=$_SESSION['name']?></h1>
 <form enctype="multipart/form-data" method="post" action="#">
