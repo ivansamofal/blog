@@ -27,10 +27,16 @@ if (!empty($_POST['login']) && !empty($_POST['login']) && !empty($_FILES['file']
 		}
 		move_uploaded_file($tmp_name, "$dir_user/$file");
 		//$mysqli->query("SET names 'cp1251'");
-		$mysqli->query("SET NAMES 'utf8'"); 
-		$mysqli->query("SET CHARACTER SET 'utf8'");
-		$mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
-    	$login = $mysqli->query("INSERT INTO `users` VALUES (NULL, '$login', '$name', '$surname', '$age', '$email', '$password', '$file', '$about');");
+		//$mysqli->query("SET NAMES 'utf8'"); 
+		//$mysqli->query("SET CHARACTER SET 'utf8'");
+		//$mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
+    	//$login = $mysqli->query("INSERT INTO `users` VALUES (NULL, '$login', '$name', '$surname', '$age', '$email', '$password', '$file', '$about');");
+		
+		$login = $mysqli->prepare("INSERT INTO `users` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);");
+		$login->bind_param("ississss", $login, $name, $surname, $age, $email, $password, $file, $about);
+		$login->execute();
+		
+		
     	$_SESSION['msg'] = 'вы успешно зарегились';
     	header("Location: index.php");
 }
