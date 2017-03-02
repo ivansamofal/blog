@@ -14,12 +14,14 @@ if($_GET['cat']){
 //для результатов поиска
 if($_GET['query']){
 		$searchQuery = ($_GET['query']) ? '%' . $mysqli->real_escape_string(trim($_GET['query'])) . '%' : '';
-		$getSearch = $mysqli->prepare("SELECT * FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ?");
-		$getSearch->bind_param("ss", $searchQuery, $searchQuery);
+		$getSearch = $mysqli->prepare("SELECT * FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ? OR `tags` LIKE ?");
+		$getSearch->bind_param("sss", $searchQuery, $searchQuery, $searchQuery);
 		$getSearch->execute();
 		$getSearch = $getSearch->get_result();
-		$selectCats = $getSearch;
+		//$selectCats = $getSearch;
+		$arr['res']  = $getSearch;
 		}
-		
+if(!$_GET['query']){	
 $arr = $obj1->paginationCategory($mysqli, $cat);
+}
 include_once('view/v_articles.php');

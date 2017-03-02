@@ -2,6 +2,15 @@
 <div class="cleaner"></div>
 </div>
 
+<?
+$rowsTags = $mysqli->query("SELECT `tags` FROM `articles` WHERE `tags` != ''");
+while($resultTags = $rowsTags->fetch_assoc()){
+	$arrTags[] = explode(',', $resultTags['tags']);
+}
+?>
+
+
+
 
 <div id="templatemo_footer_wrapper">
 	<div id="templatemo_footer">
@@ -36,8 +45,12 @@
         </div>
 
         <div class="footer_box col_w260 fb_last">
-        	<h4>Tag Cloud</h4>
-            	<a href="#" style="font-size:12px">Aenean</a> <a href="#" style="font-size:11px">Cursus</a> <a href="#" style="font-size:16px">Maecenas</a> <a href="#" style="font-size:11px">Aliquam Ligula</a> <a href="#" style="font-size:20px">Egestas</a> <a href="#" style="font-size:16px">Suscipit</a> <a href="#" style="font-size:12px">Sapien</a> <a href="#" style="font-size:28px">Dignissim</a> <a href="#" style="font-size:14px">Vestibulum</a> <a href="#" style="font-size:12px">Lorem</a> <a href="#" style="font-size:14px">Urnain</a> <a href="#" style="font-size:20px">Neque</a> <a href="#" style="font-size:12px">Aenean</a>
+        	<h4>Облако тегов:</h4>
+			<?foreach($arrTags as $value): ?>
+				<?foreach($value as $itemTag): ?>
+					<a href="articles.php?query=<?=trim($itemTag)?>" style="font-size:<?=rand(11, 20)?>px"><?=trim($itemTag)?></a> 
+				<?endforeach;?>
+			<?endforeach;?>
         </div>
     
     	<div class="cleaner"></div>

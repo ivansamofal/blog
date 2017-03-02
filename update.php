@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 if ($_POST['title'] != '' && $_POST['text'] != '') {
 	$title = $mysqli->real_escape_string(htmlspecialchars($_POST['title']));
-	$text = $mysqli->real_escape_string(htmlspecialchars($_POST['text']));
+	$text = $mysqli->real_escape_string($_POST['text']);
 	$id_author = $mysqli->real_escape_string(htmlspecialchars(mb_convert_encoding($_POST['author'], 'cp1251', mb_detect_encoding($_POST['author']))));
 	$result = $mysqli->query("UPDATE `articles` SET `title` = '$title', `text` = '$text', `id_author` = '$id_author' $isImg $isCat, `tags` = '$tags' WHERE `id` = $id");
 	//$img = $mysqli->query("INSERT INTO `images` VALUES (NULL, '$file_name', '$id');"); 

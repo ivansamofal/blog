@@ -807,6 +807,7 @@ body {
 .post {
 	width:622px;	
 	margin:18px 0 0 47px;
+	min-height: 310px;
 }
 .post h1 {
 	font-size:29px;
@@ -822,7 +823,9 @@ body {
 	border:0px none;
 }
 .post p {
-	font-size:12px;
+	font-size:13px;
+	text-indent: 30px;
+	line-height: 22px;
 }
 .post_inf {
 	float:left;
