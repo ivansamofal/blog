@@ -1,29 +1,9 @@
 <?
-mb_internal_encoding("UTF-8");
-//для статей конкретной категории
-(isset($_GET['cat'])) ? $cat = htmlspecialchars($mysqli->real_escape_string(trim($_GET['cat']))) : "";
-if($_GET['cat']){
-	$getIDCat = $mysqli->query("SELECT `id_cat`, `name` FROM `categories` WHERE `alias_cat` = '$cat'");
-	$getIDCat = $getIDCat->fetch_assoc();
-	$nameCat = $getIDCat['name'];
-	$getIDCat = $getIDCat['id_cat'];
-	$selectCats = $mysqli->query("SELECT * FROM `articles` WHERE `category` = '$getIDCat'");
-}
-//для результатов поиска
-if($_GET['query']){
-		$searchQuery = ($_GET['query']) ? '%' . $mysqli->real_escape_string(trim($_GET['query'])) . '%' : '';
-		$getSearch = $mysqli->prepare("SELECT * FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ?");
-		$getSearch->bind_param("ss", $searchQuery, $searchQuery);
-		$getSearch->execute();
-		$getSearch = $getSearch->get_result();
-		$selectCats = $getSearch;
-		}
 include_once('view/header.php');
 ?>
 <div id="templatemo_main">
-
 	    <div id="templatemo_content">
-            <? while ($row=$selectCats->fetch_assoc()):?>
+            <? while ($row=$arr['res']->fetch_assoc()):?>
 			<? $textTags = explode(',', $row['tags']);?>
 				<div class="post_box">
 					<? $imagePost = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>
@@ -48,6 +28,19 @@ include_once('view/header.php');
 
 	<? include('sidebar.php');?>
  <div style="clear: both;"></div>
+ <?if ($arr['num_pages'] > 1):?>
+ <div class="pagination">
+			<?
+			for($i=1;$i<=$arr['num_pages'];$i++) {
+			  if ($i-1 == $arr['page']) {
+				echo '<span>' . $i. ' </span>';
+			  } else {
+				echo '<a href="'.$_SERVER["REQUEST_URI"].'&page='.$i.'">'.$i."</a> ";
+			  }
+			}
+			?>
+</div>
+<? endif;?>	
 </div>
 
 <? 

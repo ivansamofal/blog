@@ -41,18 +41,19 @@ include_once('header.php');
         
         <? include('sidebar.php');?>
 
-		<div class="pagination">
+		<?if ($arr['num_pages'] > 1):?>
+ <div class="pagination">
 			<?
 			for($i=1;$i<=$arr['num_pages'];$i++) {
 			  if ($i-1 == $arr['page']) {
 				echo '<span>' . $i. ' </span>';
 			  } else {
-				echo '<a href="'.$_SERVER['PHP_SELF'].'?page='.$i.'">'.$i."</a> ";
+				echo '<a href="'.$_SERVER["PHP_SELF"].'?page='.$i.'">'.$i."</a> ";
 			  }
-
 			}
 			?>
-		</div>
+</div>
+<? endif;?>	
     
     	<div class="cleaner"></div>
     </div>

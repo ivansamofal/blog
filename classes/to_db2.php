@@ -62,10 +62,27 @@ class to_db2 {
                 $start=abs($arr['page']*$per_page);
                 // составляем запрос и выводим записи
                 // переменную $start используем, как нумератор записей.
-                $res = $mysqli->query("SELECT count(*) FROM `articles`");
+                $res = $mysqli->query("SELECT count(*) FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` ");
                 $row2=$res->fetch_row();
                 $total_rows=$row2[0];
                 $arr['res'] = $mysqli->query("SELECT * FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` ORDER BY `id` DESC LIMIT $start,$per_page");
+                $arr['num_pages'] = ceil($total_rows/$per_page);
+                return $arr;
+        }
+		
+		public function paginationCategory($mysqli, $cat) { //вывод всех новостей на главной и в категориях
+                // количество записей, выводимых на странице
+                $per_page=10;
+                // получаем номер страницы
+                if (isset($_GET['page'])) $arr['page']=($_GET['page']-1); else $page=0;
+                // вычисляем первый оператор для LIMIT
+                $start=abs($arr['page']*$per_page);
+                // составляем запрос и выводим записи
+                // переменную $start используем, как нумератор записей.
+                $res = $mysqli->query("SELECT count(*) FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` AND `categories`.`alias_cat` = '$cat'");
+                $row2=$res->fetch_row();
+                $total_rows=$row2[0];
+                $arr['res'] = $mysqli->query("SELECT * FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` AND `categories`.`alias_cat` = '$cat' ORDER BY `id` DESC LIMIT $start,$per_page");
                 $arr['num_pages'] = ceil($total_rows/$per_page);
                 return $arr;
         }
