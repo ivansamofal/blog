@@ -53,7 +53,7 @@ class to_db2 {
                  return $art3;
         }
 
-        public function pagination1 ($mysqli) { //вывод всех новостей на главной и в категориях
+        public function pagination1 ($mysqli) { //вывод всех новостей на главной 
                 // количество записей, выводимых на странице
                 $per_page=10;
                 // получаем номер страницы
@@ -65,12 +65,12 @@ class to_db2 {
                 $res = $mysqli->query("SELECT count(*) FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` ");
                 $row2=$res->fetch_row();
                 $total_rows=$row2[0];
-                $arr['res'] = $mysqli->query("SELECT * FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` ORDER BY `id` DESC LIMIT $start,$per_page");
+                $arr['res'] = $mysqli->query("SELECT `articles`.`id`, `articles`.`title`, `articles`.`text`, `articles`.`time`, `articles`.`id_author`, `articles`.`date`, `articles`.`img`, `articles`.`stat`, `articles`.`count_like`, `articles`.`category`, `categories`.`alias_cat`, `articles`.`tags`, `categories`.`id_cat`, `users`.`name`, `users`.`surname`, `categories`.`alias_cat`, `users`.`age`, `users`.`avatar`, `users`.`id` as `id_user` FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` JOIN `users` ON `articles`.`id_author` = `users`.`id` ORDER BY `articles`.`id` DESC LIMIT $start,$per_page");
                 $arr['num_pages'] = ceil($total_rows/$per_page);
                 return $arr;
         }
 		
-		public function paginationCategory($mysqli, $cat) { //вывод всех новостей на главной и в категориях
+		public function paginationCategory($mysqli, $cat) { //вывод всех новостей в категориях
                 // количество записей, выводимых на странице
                 $per_page=10;
                 // получаем номер страницы
@@ -82,7 +82,7 @@ class to_db2 {
                 $res = $mysqli->query("SELECT count(*) FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` AND `categories`.`alias_cat` = '$cat'");
                 $row2=$res->fetch_row();
                 $total_rows=$row2[0];
-                $arr['res'] = $mysqli->query("SELECT * FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` AND `categories`.`alias_cat` = '$cat' ORDER BY `id` DESC LIMIT $start,$per_page");
+                $arr['res'] = $mysqli->query("SELECT *, `users`.`id` as `id_user` FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` AND `categories`.`alias_cat` = '$cat' JOIN `users` ON `articles`.`id_author` = `users`.`id` ORDER BY `articles`.`id` DESC LIMIT $start,$per_page");
                 $arr['num_pages'] = ceil($total_rows/$per_page);
                 return $arr;
         }

@@ -30,10 +30,12 @@ include_once('header.php');
 					<?else:?>
 					| Нет тегов к данной статье:(
 					<?endif;?>
+					<span>автор: <a href="user.php?id=<?=$row['id_user']?>"><?=$row['name'] . ' ' . $row['surname']?></a></span>
 					</div>
+					
 					<div class="image_wrapper"><a href="article.php?id=<?=$row['id']?>"><img src="img/<?=$imagePost?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/></a></div>
 				  <p align="justify"><?=$obj1->getDescription($row['text'])?>
-				  <a href="article.php?id=<?=$row['id']?>" class="continue">Продолжить ...</a></p>
+				  <a href="article.php?id=<?=$row['id']?>" class="continue">Продолжить...</a></p>
 				  <div class="cleaner"></div>
 				</div>
 			<? endwhile;?>

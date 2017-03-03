@@ -11,7 +11,7 @@ if($_GET['cat']){
 	$getIDCat = $getIDCat['id_cat'];
 	$selectCats = $mysqli->query("SELECT * FROM `articles` WHERE `category` = '$getIDCat'");
 }
-//для результатов поиска
+//для результатов поиска: если есть поисковый запрос - ищем, если нет - отображаем категорию
 if($_GET['query']){
 		$searchQuery = ($_GET['query']) ? '%' . $mysqli->real_escape_string(trim($_GET['query'])) . '%' : '';
 		$getSearch = $mysqli->prepare("SELECT * FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ? OR `tags` LIKE ?");
@@ -20,8 +20,8 @@ if($_GET['query']){
 		$getSearch = $getSearch->get_result();
 		//$selectCats = $getSearch;
 		$arr['res']  = $getSearch;
-		}
-if(!$_GET['query']){	
-$arr = $obj1->paginationCategory($mysqli, $cat);
+}else{
+	$arr = $obj1->paginationCategory($mysqli, $cat);
 }
+
 include_once('view/v_articles.php');

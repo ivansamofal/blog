@@ -1139,7 +1139,22 @@ body {
 .messageDel span{
 	text-align: center;
 }
-
+.userImg{
+	width: 280px;
+}
+.userProfile h3{
+	display: inline-block;
+    vertical-align: top;
+    background: url(../img/man_person.png) no-repeat;
+    background-size: 25px;
+    background-position: 0px 0px;
+    text-indent: 30px;
+    line-height: 25px;
+}
+.userProfile h2, .userProfile h4{
+	text-align: center;
+	font-weight: 300;
+}
 
 
 

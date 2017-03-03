@@ -26,4 +26,6 @@ $years = new years($num);
     if (isset($_POST['out'])) {
 	$obj1->logout();
 }
+/*autorization */
 $obj1->authorization($mysqli);
+ /* end autorization */

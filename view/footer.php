@@ -7,6 +7,10 @@ $rowsTags = $mysqli->query("SELECT `tags` FROM `articles` WHERE `tags` != ''");
 while($resultTags = $rowsTags->fetch_assoc()){
 	$arrTags[] = explode(',', $resultTags['tags']);
 }
+$allTags = array_merge($arrTags);
+
+$count = 0;
+$clearArrTag = array();
 ?>
 
 
@@ -48,7 +52,16 @@ while($resultTags = $rowsTags->fetch_assoc()){
         	<h4>Облако тегов:</h4>
 			<?foreach($arrTags as $value): ?>
 				<?foreach($value as $itemTag): ?>
+				<?$count +=1;
+				if($count > 35){
+					break;
+				}
+				if(!in_array(trim($itemTag), $clearArrTag)){
+					$clearArrTag[] = trim($itemTag);?>
 					<a href="articles.php?query=<?=trim($itemTag)?>" style="font-size:<?=rand(11, 20)?>px"><?=trim($itemTag)?></a> 
+					<?
+				}
+				?>
 				<?endforeach;?>
 			<?endforeach;?>
         </div>
@@ -59,7 +72,7 @@ while($resultTags = $rowsTags->fetch_assoc()){
 
 <div id="templatemo_copyright">
     Copyright © <?=date('Y')?> <a href="#"><?=$titleSite?></a> | 
-    <a href="index.php" target="_parent">Ivan Samofal</a>
+    <a href="http://ivansamofal.ru/" target="_parent">Ivan Samofal</a>
 </div>
 
 </body>
