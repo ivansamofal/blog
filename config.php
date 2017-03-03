@@ -17,8 +17,6 @@ $titleSite = 'Блог на PHP своими руками';
 $keywords = 'Блог, обучение php с нуля';
 $description = 'Удобный блог для чтения интересных постов';
 
-
-
 //for sidebar
 $obj1 = new to_db2;
 $years = new years($num);

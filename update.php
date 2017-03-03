@@ -20,7 +20,7 @@ if (isset($_GET['id'])) {
 
 /* сохранение обновленной статьи*/
 if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
-	$file_name = $_FILES['file']['name'];
+	$file_name = 'post_' . $id . '_' . trim(mb_strtolower($_FILES['file']['name']));
 	($file_name) ? $isImg = ", `img` = '$file_name'" : $isImg = "";
 	$newCategory = $_POST['category']; 
 	//$getNumberCategory = $mysqli->query("SELECT `id_cat` FROM `categories` WHERE `name` = '$newCategory'");

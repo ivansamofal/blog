@@ -1,5 +1,5 @@
 <?
-include_once('model/model.php');
+include_once('config.php');
 
 if (!empty($_GET['id'])) {
 		header("Location: index.php");

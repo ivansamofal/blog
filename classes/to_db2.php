@@ -97,8 +97,7 @@ class to_db2 {
 			$login->execute();
 			$result = $login->get_result();
 			$res = $result->fetch_assoc();
-           // $res = $login->fetch_assoc();
-
+			//var_dump($res);
             if ($res['email'] != $_POST['login'] || $res['password'] != $_POST['password']) {
                 if ($res['email'] == $_POST['login']) {
                     $_SESSION['msg'] = 'неправильный пароль';
@@ -126,8 +125,8 @@ class to_db2 {
     $author = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['author'])));
     $date = date(Y . '-' . m .'-' . d);
     $time = date(G . ':' . i . ':' . s);
-    $name_file = trim(mb_strtolower($_FILES['file']['name']));
-    $tmp_name = $_FILES['file']['tmp_name'];
+    
+    
 	$alias = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['alias'])));
 	$getCategs = $mysqli->query("SELECT * FROM `categories`");
 	$tags = ($_POST['tags']) ? $mysqli->real_escape_string(htmlspecialchars(trim($_POST['tags']))) : '';
@@ -139,6 +138,8 @@ class to_db2 {
 	$category = $_POST['category'];
 //header("Location: index.php");
 	if($name_file && mb_strlen($name_file) > 3){
+	$name_file = 'post_' . $id . '_' . trim(mb_strtolower($_FILES['file']['name']));
+	$tmp_name = $_FILES['file']['tmp_name'];
 	$image = new SimpleImage();
     move_uploaded_file($tmp_name, "img/$name_file");
 	//$image->load("img/$name_file");
