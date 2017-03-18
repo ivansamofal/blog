@@ -27,8 +27,8 @@
 </head>
 <?
 $menuObj = new menuClass;
-$menu = $menuObj->getMenu($mysqli);
-$cats = $menuObj->getCategories($mysqli);
+$menu = $menuObj->getMenu($db);
+$cats = $menuObj->getCategories($db);
 //var_dump($cats);
 ?>
 <body>

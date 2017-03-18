@@ -2,33 +2,39 @@
 include_once('config.php');
 
 mb_internal_encoding("UTF-8");
-(isset($_SESSION['id'])) ? $id = htmlspecialchars($mysqli->real_escape_string($_SESSION['id'])) : header("Location: index.php");
+(isset($_SESSION['id'])) ? $id = htmlspecialchars($_SESSION['id']) : header("Location: index.php");
 
 if(isset($_POST['submit'])){
 	if (isset($_POST['name'])){
-		$name = htmlspecialchars($mysqli->real_escape_string($_POST['name']));
+		$name = htmlspecialchars($_POST['name']);
 		$_SESSION['name'] = $name;
-		$newName = $mysqli->query("UPDATE `users` SET `name` = '$name' WHERE `id` = '$id'");
+		$newName = $db->prepare("UPDATE `users` SET `name` = ? WHERE `id` = ?");
+		$newName->execute(array($name, $id));
 	}
 	if (isset($_POST['surname'])){
-		$surname = htmlspecialchars($mysqli->real_escape_string($_POST['surname']));
-		$newName = $mysqli->query("UPDATE `users` SET `surname` = '$surname' WHERE `id` = '$id'");
+		$surname = htmlspecialchars($_POST['surname']);
+		$newName = $db->prepare("UPDATE `users` SET `surname` = ? WHERE `id` = ?");
+		$newName->execute(array($surname, $id));
 	}
 	if (isset($_POST['age'])){
-		$age = htmlspecialchars($mysqli->real_escape_string($_POST['age']));
-		$newName = $mysqli->query("UPDATE `users` SET `age` = '$age' WHERE `id` = '$id'");
+		$age = htmlspecialchars($_POST['age']);
+		$newName = $db->prepare("UPDATE `users` SET `age` = ? WHERE `id` = ?");
+		$newName->execute(array($age, $id);
 	}
 	if (isset($_POST['about'])){
-		$about = htmlspecialchars($mysqli->real_escape_string($_POST['about']));
-		$newName = $mysqli->query("UPDATE `users` SET `about` = '$about' WHERE `id` = '$id'");
+		$about = htmlspecialchars($_POST['about']);
+		$newName = $db->prepare("UPDATE `users` SET `about` = ? WHERE `id` = ?");
+		$newName->execute(array($about, $id));
 	}
 	if (isset($_POST['email'])){
-		$email = htmlspecialchars($mysqli->real_escape_string($_POST['email']));
-		$newName = $mysqli->query("UPDATE `users` SET `email` = '$email' WHERE `id` = '$id'");
+		$email = htmlspecialchars($_POST['email']);
+		$newName = $db->prepare("UPDATE `users` SET `email` = ? WHERE `id` = ?");
+		$newName->execute(array($email, $id));
 	}
 	if (isset($_POST['password'])){
-		$password = htmlspecialchars($mysqli->real_escape_string($_POST['password']));
-		$newName = $mysqli->query("UPDATE `users` SET `password` = '$password' WHERE `id` = '$id'");
+		$password = htmlspecialchars($_POST['password']);
+		$newName = $mysqli->query("UPDATE `users` SET `password` = ? WHERE `id` = ?");
+		$newName->execute(array($password, $id));
 	}
 	if (isset($_FILES['file']['name']) && mb_strlen($_FILES['file']['name']) > 4 ){
 		$file_name = $_FILES['file']['name'];
@@ -41,7 +47,8 @@ if(isset($_POST['submit'])){
 			mkdir("img/avatars/$id");
 		}
 		move_uploaded_file($tmp_name, "img/avatars/$id/$file_name");
-		$newName = $mysqli->query("UPDATE `users` SET `avatar` = '$file_name' WHERE `id` = '$id'");
+		$newName = $db->prepare("UPDATE `users` SET `avatar` = ? WHERE `id` = ?");
+		$newName->execute(array($file_name, $id));
 	}
 	header("Location: profile.php");
 }
@@ -51,22 +58,17 @@ include_once('view/header.php');
 //$getMyProfile = $mysqli->query("SELECT * FROM `users` WHERE `id` = '$id'");
 //$resultMyProfile = $getMyProfile->fetch_assoc();
 
-			$getMyProfile = $mysqli->prepare("SELECT * FROM `users` WHERE `id` = ?");
-			$getMyProfile->bind_param("s", $id);
-			$getMyProfile->execute();
-			$getMyProfile = $getMyProfile->get_result();
-			$resultMyProfile = $getMyProfile->fetch_assoc();
+			$getMyProfile = $db->prepare("SELECT * FROM `users` WHERE `id` = ?");
+			$getMyProfile->execute(array($id));
+			$resultMyProfile = $getMyProfile->fetch();
 			
-
 //достаем список статей юзера
 //$getMyProfile = $mysqli->query("SELECT * FROM `articles` WHERE `id_author` = '$id'");
 
-			$getMyProfile = $mysqli->prepare("SELECT * FROM `articles` WHERE `id_author` = ?");
-			$getMyProfile->bind_param("s", $id);
-			$getMyProfile->execute();
-			$getMyProfile = $getMyProfile->get_result();
+			$getMyProfile = $db->prepare("SELECT * FROM `articles` WHERE `id_author` = ?");
+			$getMyProfile->execute(array($id));
 
-while($resultProfile = $getMyProfile->fetch_assoc()){
+while($resultProfile = $getMyProfile->fetch()){
 	$arrArticles['id'][] = $resultProfile['id'];
 	$arrArticles['title'][] = $resultProfile['title'];
 	$arrArticles['text'][] = $resultProfile['text'];
@@ -81,21 +83,19 @@ while($resultProfile = $getMyProfile->fetch_assoc()){
 //$getMyArticles = $mysqli->query("SELECT * FROM `articles` WHERE `id_author` = '$id'");
 //$resultArticles = $getMyArticles->fetch_assoc();
 
-			$getMyArticles = $mysqli->prepare("SELECT * FROM `articles` WHERE `id_author` = ?");
-			$getMyArticles->bind_param("s", $id);
-			$getMyArticles->execute();
-			$getMyArticles = $getMyArticles->get_result();
-			$resultArticles = $getMyArticles->fetch_assoc();
+			$getMyArticles = $db->prepare("SELECT * FROM `articles` WHERE `id_author` = ?");
+			$getMyArticles->execute(array($id));
+			$resultArticles = $getMyArticles->fetch();
 
 //$getMyComments = $mysqli->query("SELECT * FROM `comments`  JOIN `articles`  ON `comments`.`id_article` = `articles`.`id` AND `articles`.`id_author` = '$id'");
 
-			$getMyComments = $mysqli->prepare("SELECT * FROM `comments`  JOIN `articles`  ON `comments`.`id_article` = `articles`.`id` AND `articles`.`id_author` = ?");
-			$getMyComments->bind_param("s", $id);
-			$getMyComments->execute();
-			$getMyComments = $getMyComments->get_result();
-			//$getMyComments = $getMyComments->fetch_assoc();
+			$getMyComments = $db->prepare("
+			SELECT * FROM `comments`  JOIN `articles`  
+			ON `comments`.`id_article` = `articles`.`id` 
+			AND `articles`.`id_author` = ?");
+			$getMyComments->execute(array($id));
 
-while($rowComment = $getMyComments->fetch_assoc()){
+while($rowComment = $getMyComments->fetch()){
 	$Comments['text'][] = $rowComment['text_comm'];
 	$Comments['date'][] = $rowComment['date_comm'];
 	$Comments['time'][] = $rowComment['time_comm'];

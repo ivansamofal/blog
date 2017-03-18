@@ -203,8 +203,6 @@ body {
 .comments {
 	width: 600px;
 	min-height: 100px;
-	
-	background: #f2f2f2;
 	margin: 0 auto;
 	padding: 10px;
 	
@@ -1002,6 +1000,7 @@ body {
 }
 .comment {
 	margin:0 0 50px 0;
+	background: #f2f2f2
 }
 .comm_hdr, #cmnt_frm {
 	background:url(../images/form.jpg) no-repeat;
@@ -1037,6 +1036,7 @@ body {
 .comm_txt {
 	margin:10px 15px 0 23px;
 	font-size:12px;
+	padding: 10px 10px 20px 0px;
 }
 #cmnt_frm {
 	background-position:0 -100px;

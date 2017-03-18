@@ -1,10 +1,10 @@
 <?
    /* \sidebar */
-$art2 = $obj1->most_read($mysqli);
+$art2 = $obj1->most_read($db);
 //вывод комментариев
-    $art3 = $obj1->comments($mysqli);
+    $art3 = $obj1->comments($db);
 /*ВЫВОД 5 самых активных авторов */
- $aut = $obj1->five_authors($mysqli);
+ $aut = $obj1->five_authors($db);
 /*/ВЫВОД 5 самых активных авторов */
 
     /* end of sidebar */

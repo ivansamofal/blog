@@ -3,7 +3,7 @@ include_once('view/header.php');
 ?>
 <div id="templatemo_main">
 	    <div id="templatemo_content">
-            <? while ($row=$arr['res']->fetch_assoc()):?>
+            <? while ($row=$arr['res']->fetch()):?>
 			<? $textTags = explode(',', $row['tags']);?>
 				<div class="post_box">
 					<? $imagePost = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>

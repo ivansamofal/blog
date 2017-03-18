@@ -1,17 +1,13 @@
 <? 
-include_once('model/model.php');
+include_once('config.php');
 
 if ($_POST['login'] != '' && $_POST['pswd'] != '' ) {
-    $login = trim($mysqli->real_escape_string($_POST['login']));
-    $pswd = trim($mysqli->real_escape_string($_POST['pswd']));
-   // $result = $mysqli->query("SELECT * FROM `users` WHERE `email` = '$login';"); 
-    //$res2 = $result->fetch_assoc();
+    $login = trim($_POST['login']);
+    $pswd = trim($_POST['pswd']);
 	
-			$result = $mysqli->prepare("SELECT * FROM `users` WHERE `email` = ?");
-			$result->bind_param("s", $login);
-			$result->execute();
-			$result = $result->get_result();
-			$res2 = $result->fetch_assoc();
+			$result = $db->prepare("SELECT * FROM `users` WHERE `email` = ?");
+			$result->execute(array($login));
+			$res2 = $result->fetch();
 
     if ($login === $res2['email'] && $pswd === $res2['password']) {
         $_SESSION['id'] = $res2['id'];

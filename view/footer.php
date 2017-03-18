@@ -3,8 +3,8 @@
 </div>
 
 <?
-$rowsTags = $mysqli->query("SELECT `tags` FROM `articles` WHERE `tags` != ''");
-while($resultTags = $rowsTags->fetch_assoc()){
+$rowsTags = $db->query("SELECT `tags` FROM `articles` WHERE `tags` != ''");
+while($resultTags = $rowsTags->fetch()){
 	$arrTags[] = explode(',', $resultTags['tags']);
 }
 $allTags = array_merge($arrTags);

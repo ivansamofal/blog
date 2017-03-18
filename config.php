@@ -2,8 +2,20 @@
 session_start();
 ini_set('default_charset', 'UTF-8');
 mb_internal_encoding("UTF-8");
-$mysqli = new mysqli('localhost', 'root', '', 'myblog');
-$mysqli->set_charset('utf8');
+
+define("HOST", "localhost");
+define("DBNAME", "myblog2");
+define("DBUSER", "root");
+define("DBPASSWORD", "");
+
+//подключение через PDO
+try {
+    $db = new PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD,
+	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+} catch (PDOException $e) {
+    print "Error!: " . $e->getMessage() . "<br/>";
+    die();
+}
 
 //автозагрузка классов
 function __autoload( $className ) {
@@ -25,5 +37,5 @@ $years = new years($num);
 	$obj1->logout();
 }
 /*autorization */
-$obj1->authorization($mysqli);
+$obj1->authorization($db);
  /* end autorization */

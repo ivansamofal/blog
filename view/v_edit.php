@@ -1,6 +1,6 @@
 <?
 include_once('header.php');
-$getCategs = $mysqli->query("SELECT * FROM `categories`");
+$getCategs = $db->query("SELECT * FROM `categories`");
 ?>
 
 <div id="templatemo_main">
@@ -13,7 +13,7 @@ $getCategs = $mysqli->query("SELECT * FROM `categories`");
 <input class="title-create" type="text" placeholder="enter title" name="title" value="<?=$title_con?>">
 <select name="category">
 	<? $arrCat = array();?>
-	<?while($getRow = $getCategs->fetch_assoc()):?>
+	<?while($getRow = $getCategs->fetch()):?>
 	<?if($getNameCat == $getRow['name']):?>
 	<option><?=$getRow['name']?></option>
 	<?else:?>

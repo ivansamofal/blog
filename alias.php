@@ -12,7 +12,8 @@ if($id){
 	/** Обновляем количество лайков в статье */
 	
 	//$query = $mysqli->query("UPDATE `articles` SET `count_like` = `count_like`+1  WHERE `id` = '$id'");
-	$setAlias = $mysqli->query("UPDATE `articles` SET `alias` = '$alias' WHERE `id` = '$id';");
+	$setAlias = $db->prepare("UPDATE `articles` SET `alias` = ? WHERE `id` = ?;");
+	$setAlias->execute(array($alias, $id));
 	//$query3 = $mysqli->query("SELECT `id_art`, `id_usr` FROM `likes` WHERE `id_art` = '$id' AND `id_usr` = '$usr'");
 	//$row3 = $query3->fetch_assoc();
 	

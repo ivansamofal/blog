@@ -18,13 +18,17 @@ if($id && $usr && $msg){
 	/** Обновляем количество лайков в статье */
 	
 	if ($msg != '') {
-		$mysqli->query("SET names 'utf-8'");
-		$query9 = $mysqli->query("INSERT INTO `comments` VALUES (NULL, '$msg', '$usr', '$timeCom', '$dateCom', '$id');");
+		//$mysqli->query("SET names 'utf-8'");
+		$query9 = $db->prepare("INSERT INTO `comments` VALUES (NULL, ?, ?, ?, ?, ?);");
+		$query9->execute(array($msg, $usr, $timeCom, $dateCom, $id));
 	}
 	
 //SELECT * FROM `comments` JOIN `users` ON `comments`.`author` = `users`.`id` ORDER BY `comments`.`id` DESC LIMIT 1
-	$query10 = $mysqli->query("SELECT * FROM `comments` JOIN `users` ON `comments`.`author` = `users`.`id` ORDER BY `comments`.`id` DESC LIMIT 1");
-	while ($row5 = $query10->fetch_assoc()) {
+	$query10 = $db->query("
+	SELECT * FROM `comments` JOIN `users` 
+	ON `comments`.`author` = `users`.`id` 
+	ORDER BY `comments`.`id` DESC LIMIT 1");
+	while ($row5 = $query10->fetch()) {
 		$some['text'] = $row5['text_comm'];
 		$some['time'] = $row5['time_comm'];
 		$some['date'] = $row5['date_comm'];
@@ -52,7 +56,6 @@ $out = array(
 	'some' => $some,
 	'message' => $message,
 	'count' => $count,
-	//'msg' => $some['text'][2],
 	'msg' => $some
 );
 

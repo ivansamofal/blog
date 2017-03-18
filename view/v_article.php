@@ -4,7 +4,6 @@ include_once('header.php');
 
 <div id="templatemo_main">
 <div id="lcnt">
-
 				<div class="post">
 					<div class="post_inf">
 						<span><?=$row['date']?> в <?=mb_substr($row['time'], 0, 5)?></span><br />
@@ -17,15 +16,11 @@ include_once('header.php');
 					<img src="img/<?=$image?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/>
 					<p><?=$row['text']?></p>
 					<?
-					$idArticle = $mysqli->real_escape_string(trim($_GET['id']));
-					//$getUserId = $mysqli->query("SELECT `id_author` FROM `articles` WHERE `id` = '$idArticle'");
-					//$getUserId = $getUserId->fetch_assoc();
+					$idArticle = trim($_GET['id']);
 					
-						$getUserId = $mysqli->prepare("SELECT `id_author` FROM `articles` WHERE `id` = ?");
-						$getUserId->bind_param("s", $idArticle);
-						$getUserId->execute();
-						$getUserId = $getUserId->get_result();
-						$getUserId = $getUserId->fetch_assoc();
+						$getUserId = $db->prepare("SELECT `id_author` FROM `articles` WHERE `id` = ?");
+						$getUserId->execute(array($idArticle));
+						$getUserId = $getUserId->fetch();
 			
 					$getUserId = $getUserId['id_author'];
 					?>
@@ -50,13 +45,13 @@ include_once('header.php');
 					</div>
 					<?endif;?>
 				</div>
-				<? if (count($comm['text_comm']) > 0):?>
+				
 				<h2 class="buttonComments" rel="0">
 					<?=$obj1->getCommentsNames(count($comm['text_comm']))?>
 				</h2>
 				
 				<div class="comments">
-			
+			<? if (count($comm['text_comm']) > 0):?>
 					<!-- Comment -->
 					<? for ($i = 0; $i < count($comm['text_comm']); $i++):?>
 					<div class="comment">
@@ -74,25 +69,18 @@ include_once('header.php');
 
 					</div>
 					<? endfor; ?>
-				</div>
 				<? endif;?>
+				</div>
+				
 				<? if($_SESSION['id']):?>
-				<div data-ids="<?=$id?>" data-usrc="<?=$_SESSION['id']?>" data-msg="<?=$_SESSION['serv']?>">
+				<div>
 				<h2>Оставьте свой комментарий!</h2>
 
 				<!-- Comment Form -->			
-				<form id="cmnt_frm" method="post" action="">
-                                        <!--<p><input type="text" name="author_comment" size="22" tabindex="1" id="author"/><label>Имя <span>(обязательно)</span></label></p>-->
-										<input type="hidden" placeholder="your name" name="author_comment" value="<?=$_SESSION['id']?>">
-                                        <!--<p><input type="text" name="email_comment" size="22" tabindex="2" id="email"/><label>Почта <span>(will not be published) (required)</span></label></p>
-                                        <p><input type="text" name="url" size="22" tabindex="3" id="url"/><label>Сайт</label></p>-->
-                                        <p>
-                                                <textarea name="text_comment" cols="65" rows="10" tabindex="4" id="comment"></textarea>
-                                        </p>
-                                        <p>
-                                                <input type="submit" name="submit" value="Отправить" tabindex="5" id="submit"/>
-                                        </p>
-
+				<form id="cmnt_frm" method="post" action="">                    
+					<input type="hidden" placeholder="your name" name="author_comment" value="<?=$_SESSION['id']?>">
+					<p><textarea name="text_comment" cols="65" rows="10" tabindex="4" id="comment"></textarea></p>
+					<p><input type="submit" name="submit" value="Отправить" tabindex="5" id="submit" class="push"/></p>
 				</form>
 				</div>
 				<? endif;?>
@@ -140,11 +128,11 @@ $(document).ready(function() {
 $(document).ready(function() {
     $(".push").bind("click", function() {
         var link = $(this);
-        var id = <?=$_GET['id']?>;
+        var id = <?=htmlspecialchars(trim($_GET['id']))?>;
         var usr = <?=$_SESSION['id']?>;
 		console.log(id);
-        var msg = jQuery('.leave-comment textarea').val();
-		jQuery('.leave-comment textarea').val('');
+        var msg = jQuery('#comment').val();
+		jQuery('#comment').val('');
         console.log(msg);
         $.ajax({
             url: "comment.php",
@@ -158,7 +146,7 @@ $(document).ready(function() {
                     $('.comm',link).html(result.some);
 					console.log(result.some);
 					console.log(result.some.text);
-					jQuery('.comments').prepend('<div class="comment"><div class="comm_hdr">' +  ' Написал: ' + result.some.name + ' ' + result.some.surname + ', ' + result.some.age + ' лет ' + result.some.date + ' в ' + result.some.time + '</div><p class="comm_txt">' + result.some.text + '<img src=img/' + result.some.avatar + ' alt="" width="60px" height="60px"></p></div>');
+					jQuery('.comments').prepend('<div class="comment"><div class="comm_hdr"><p>' +  ' Написал: ' + result.some.name + ' ' + result.some.surname + ', ' + result.some.age + ' лет <span>' + result.some.date + ' в ' + result.some.time + '</span></p></div><div class="avat"><img src=img/' + result.some.avatar + ' alt="" width="60px" height="60px"></div><p class="comm_txt">' + result.some.text + '</p></div>');
                 }else{
 					console.log('error');
                     alert(result.message);
@@ -211,4 +199,3 @@ jQuery(document).ready(function(){
 				</script>
 <? 
 include_once('footer.php');
-?>

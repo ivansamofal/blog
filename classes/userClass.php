@@ -1,12 +1,10 @@
 <?
 class userClass{
-	public function getUsers($mysqli, $id){
+	public function getUsers($db, $id){
 	
-	$getUser = $mysqli->prepare("SELECT * FROM `users` WHERE `id` = ?");
-	$getUser->bind_param("s", $id);
-	$getUser->execute();
-	$getUser = $getUser->get_result();
-	$getUser = $getUser->fetch_assoc();
+	$getUser = $db->prepare("SELECT * FROM `users` WHERE `id` = ?");
+	$getUser->execute(array($id));
+	$getUser = $getUser->fetch();
 	return $getUser;
 	}
 }

@@ -10,6 +10,6 @@ $messageDelete = ($_GET['param'] == 'del') ?  'статья успешно уд�
 	$obj1->logout();
 }
  //вывод всех постов на главной с пагинацией
-$arr = $obj1->pagination1($mysqli);
+$arr = $obj1->pagination1($db);
 
 include ('view/v_index.php');

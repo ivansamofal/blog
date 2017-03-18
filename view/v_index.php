@@ -15,11 +15,11 @@ include_once('header.php');
 				unset($_GET['param']);
 			?>
 			<?endif;?>
-            <? while ($row=$arr['res']->fetch_array()):?>
+            <? while ($row=$arr['res']->fetch()):?>
 				<div class="post_box">
 					<? $textTags = explode(',', $row['tags']);?>
 					<? $imagePost = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>
-					<h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>		
+					<h2><a href="article.php?id=<?=$row['idArt']?>"><?=$row['title']?></a></h2>		
 					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$row['alias_cat']?>"><?=$row['name']?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> 
 					
 					<?if(count($textTags) > 1):?>
@@ -33,9 +33,9 @@ include_once('header.php');
 					<span>автор: <a href="user.php?id=<?=$row['id_user']?>"><?=$row['name'] . ' ' . $row['surname']?></a></span>
 					</div>
 					
-					<div class="image_wrapper"><a href="article.php?id=<?=$row['id']?>"><img src="img/<?=$imagePost?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/></a></div>
+					<div class="image_wrapper"><a href="article.php?id=<?=$row['idArt']?>"><img src="img/<?=$imagePost?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/></a></div>
 				  <p align="justify"><?=$obj1->getDescription($row['text'])?>
-				  <a href="article.php?id=<?=$row['id']?>" class="continue">Продолжить...</a></p>
+				  <a href="article.php?id=<?=$row['idArt']?>" class="continue">Продолжить...</a></p>
 				  <div class="cleaner"></div>
 				</div>
 			<? endwhile;?>

@@ -1,29 +1,24 @@
 <?
 include_once('config.php');
-include_once('model/model.php');
 $years = new years($num);
-$article = new Article($mysqli);
+$article = new Article($db);
 if (isset($_GET['id'])) {
-	$id = htmlspecialchars($mysqli->real_escape_string($_GET['id']));
+	$id = intval(htmlspecialchars($_GET['id']));
+}else{
+	header("Location: index.php");
 }
 $usr = $_SESSION['id'];
-
-
-//$article->comments($mysqli);
 
 /*публикуем комментарии*/
 	if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['text_comment'])) {
 	
-	$text = $mysqli->real_escape_string(htmlspecialchars(mb_convert_encoding($_POST['text_comment'], 'cp1251', mb_detect_encoding($_POST['text_comment']))));
-	$author = $mysqli->real_escape_string(htmlspecialchars($_POST['author_comment']));
+	$text = htmlspecialchars(mb_convert_encoding($_POST['text_comment'], 'cp1251', mb_detect_encoding($_POST['text_comment'])));
+	$author = intval(htmlspecialchars($_POST['author_comment']));
 	$date = date(Y . '-' . m .'-' . d);
 	$time = date(G . ':' . i . ':' . s);
-	$mysqli->query("SET names 'cp1251'");
-	//$result = $mysqli->query("INSERT INTO `comments` VALUES (NULL, '$text', '$author', '$time', '$date', '$id');");  //comments subd
 	
-			$result = $mysqli->prepare("INSERT INTO `comments` VALUES (NULL, ?, ?, ?, ?, ?)");
-			$result->bind_param("sssss", $text, $author, $time, $date, $id);
-			$result->execute();
+			$result = $db->prepare("INSERT INTO `comments` VALUES (NULL, ?, ?, ?, ?, ?)");
+			$result->execute(array($text, $author, $time, $date, $id));
 			
 	$_SESSION['serv'] = $_POST['text_comment'];
 
@@ -34,69 +29,49 @@ $usr = $_SESSION['id'];
 
 /* подсчет посещаемости страницы*/
 
-//$stat = $mysqli->query("UPDATE `articles` SET `stat` = `stat` + 1 WHERE `id` = '$id';");
-//$metr = $mysqli->query("SELECT `stat` FROM `articles` WHERE `id` = '$id';");
-//$metr2 = $metr->fetch_assoc();
-			$stat = $mysqli->prepare("UPDATE `articles` SET `stat` = `stat` + 1 WHERE `id` = ?");
-			$stat->bind_param("s", $id);
-			$stat->execute();
-			
-			$metr = $mysqli->prepare("SELECT `stat` FROM `articles` WHERE `id` = ?");
-			$metr->bind_param("s", $id);
-			$metr->execute();
-			$metr = $metr->get_result();
-			$metr2 = $metr->fetch_assoc();
+			$stat = $db->prepare("UPDATE `articles` SET `stat` = `stat` + 1 WHERE `id` = ?");
+			$stat->execute(array($id));
+			$metr = $db->prepare("SELECT `stat` FROM `articles` WHERE `id` = ?");
+			$metr->execute(array($id));
+			$metr2 = $metr->fetch();
 			
 /* конец подсчет посещаемости страницы*/
 
 /* извлекаем одну запись для отображения*/
-//$result = $mysqli->query("SELECT * FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` AND `articles`.`id` = $id");
-//$row = $result->fetch_array();
 
-			$result = $mysqli->prepare("SELECT * FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` AND `articles`.`id` = ?");
-			$result->bind_param("s", $id);
-			$result->execute();
-			$result = $result->get_result();
-			$row = $result->fetch_assoc();
+			$getFullArticle = $db->prepare("
+			SELECT * FROM `articles` JOIN `categories` 
+			ON `articles`.`category` = `categories`.`id_cat` 
+			AND `articles`.`id` = :id");
+			$getFullArticle->bindParam(':id', $id, PDO::PARAM_INT);
+			$getFullArticle->execute(array(':id' => $id));
+			$row = $getFullArticle->fetch();
 /* конец извлекаем одну запись для отображения*/
 
 /* извлекаем автора поста*/ 
-//$result5 = $mysqli->query("SELECT `name`, `surname`, `age`, `avatar` FROM `users` WHERE `id` = '{$row['id_author']}'");
-//$res2 = $result5->fetch_assoc();
 
-			$result5 = $mysqli->prepare("SELECT `name`, `surname`, `age`, `avatar` FROM `users` WHERE `id` = ?");
-			$result5->bind_param("s", $row['id_author']);
-			$result5->execute();
-			$result5 = $result5->get_result();
-			$res2 = $result5->fetch_assoc();
+			$result5 = $db->prepare("SELECT `name`, `surname`, `age`, `avatar` FROM `users` WHERE `id` = ?");
+			$result5->execute(array($row['id_author']));
+			$res2 = $result5->fetch();
 
 /* конец извлекаем автора поста*/ 
 
-//$result2 = $mysqli->query("SELECT * FROM `comments` WHERE `id_article` = $id ORDER BY `id` DESC");
-
-			$result2 = $mysqli->prepare("SELECT * FROM `comments` WHERE `id_article` = ? ORDER BY `id` DESC");
-			$result2->bind_param("s", $id);
-			$result2->execute();
-			$result2 = $result2->get_result();
+			$result2 = $db->prepare("SELECT * FROM `comments` WHERE `id_article` = ? ORDER BY `id` DESC");
+			$result2->execute(array($id));
 			
-while ($row2 = $result2->fetch_assoc())  {
+while ($row2 = $result2->fetch())  {
 	
 	$comm['text_comm'][] = mb_convert_encoding($row2['text_comm'], 'utf-8', mb_detect_encoding($row2['text_comm']));
 	$comm['time_comm'][] = mb_convert_encoding($row2['time_comm'], 'utf-8', mb_detect_encoding($row2['time_comm']));
 	$comm['date_comm'][] = mb_convert_encoding($row2['date_comm'], 'utf-8', mb_detect_encoding($row2['date_comm']));
 	$comm['author'][] = mb_convert_encoding($row2['author'], 'utf-8', mb_detect_encoding($row2['author']));
-	
 }
 
 for ($k = 0; $k < count ($comm['text_comm']); $k++) {
-//$result2 = $mysqli->query("SELECT `id`, `name`, `surname`, `age`, `avatar` FROM `users` WHERE `id` = {$comm['author'][$k]}");
-//$row3 = $result2->fetch_assoc();
 
-			$result2 = $mysqli->prepare("SELECT `id`, `name`, `surname`, `age`, `avatar` FROM `users` WHERE `id` = ?");
-			$result2->bind_param("s", $comm['author'][$k]);
-			$result2->execute();
-			$result2 = $result2->get_result();
-			$row3 = $result2->fetch_assoc();
+			$result2 = $db->prepare("SELECT `id`, `name`, `surname`, `age`, `avatar` FROM `users` WHERE `id` = ?");
+			$result2->execute(array($comm['author'][$k]));
+			$row3 = $result2->fetch();
 
 $authors['name'][] = $row3['name'];
 $authors['surname'][] = $row3['surname'];
@@ -106,25 +81,18 @@ $authors['id'][] = $row3['id'];
 }
 
 /* вывод фоток к посту*/
-//$foto = $mysqli->query("SELECT * FROM `images` WHERE `id_article` = $id");
 
-			$foto = $mysqli->prepare("SELECT * FROM `images` WHERE `id_article` = ?");
-			$foto->bind_param("s", $id);
-			$foto->execute();
-			$foto = $foto->get_result();
+			$foto = $db->prepare("SELECT * FROM `images` WHERE `id_article` = ?");
+			$foto->execute(array($id));
 			
-while ($foto2 = $foto->fetch_assoc()) {
+while ($foto2 = $foto->fetch()) {
 	$url['foto'][] = $foto2['title_img'];
 }
 /* конец вывод фоток к посту*/
 	//проверка, ставил ли лайк юзер этой статье. если ставил - то сердечко закрашенное
-	//$getMyLike = $mysqli->query("SELECT count(`id`) as num FROM `likes` WHERE `id_art` = '$id' AND `id_usr` = '$usr'");
-	//$getMyLike = $getMyLike->fetch_assoc();
-			$getMyLike = $mysqli->prepare("SELECT count(`id`) as num FROM `likes` WHERE `id_art` = ? AND `id_usr` = ?");
-			$getMyLike->bind_param("ss", $id, $usr);
-			$getMyLike->execute();
-			$getMyLike = $getMyLike->get_result();
-			$getMyLike = $getMyLike->fetch_assoc();
+			$getMyLike = $db->prepare("SELECT count(`id`) as num FROM `likes` WHERE `id_art` = ? AND `id_usr` = ?");
+			$getMyLike->execute(array($id, $usr));
+			$getMyLike = $getMyLike->fetch();
 	$getMyLike = $getMyLike['num'];
 	($getMyLike) ? $isActive = true : $isActive = false;
 

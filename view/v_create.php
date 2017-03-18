@@ -1,6 +1,6 @@
 <?
 include_once('header.php');
-$getCategs = $mysqli->query("SELECT * FROM `categories`");
+$getCategs = $db->query("SELECT * FROM `categories`");
 ?>
 
 <div id="templatemo_main">
@@ -12,7 +12,7 @@ $getCategs = $mysqli->query("SELECT * FROM `categories`");
 <input type="text" placeholder="enter title" name="title" class="titleArt"><span><?=$er?></span>
 <input type="text" placeholder="enter alias" name="alias" value="" class="aliasArt"><span></span>
 <select name="category">
-	<?while($getRow = $getCategs->fetch_assoc()):?>
+	<?while($getRow = $getCategs->fetch()):?>
 	<option><?=$getRow['name']?></option>
 	<?endwhile;?>
 </select>

@@ -3,23 +3,23 @@ include_once('config.php');
 		
 if (!empty($_POST['login']) && !empty($_POST['login']) && !empty($_FILES['file']['name'])) {
 		//$login = $_POST['login'];
-		($_POST['login']) ? $login = htmlspecialchars($mysqli->real_escape_string(trim($_POST['login']))) : '';
+		($_POST['login']) ? $login = htmlspecialchars(trim($_POST['login'])) : '';
 		//$name = $_POST['name'];
-		($_POST['name']) ? $name = htmlspecialchars($mysqli->real_escape_string(trim($_POST['name']))) : '';
+		($_POST['name']) ? $name = htmlspecialchars(trim($_POST['name'])) : '';
 		//$surname = $_POST['surname'];
-		($_POST['surname']) ? $surname = htmlspecialchars($mysqli->real_escape_string(trim($_POST['surname']))) : '';
+		($_POST['surname']) ? $surname = htmlspecialchars(trim($_POST['surname'])) : '';
 		//$age = $_POST['age'];
-		($_POST['age']) ? $age = htmlspecialchars($mysqli->real_escape_string(trim($_POST['age']))) : '';
+		($_POST['age']) ? $age = htmlspecialchars(trim($_POST['age'])) : '';
 		//$email = $_POST['email'];
-		($_POST['email']) ? $email = htmlspecialchars($mysqli->real_escape_string(trim($_POST['email']))) : '';
+		($_POST['email']) ? $email = htmlspecialchars(trim($_POST['email'])) : '';
 		//$password = $_POST['password'];
-		($_POST['password']) ? $password = htmlspecialchars($mysqli->real_escape_string(trim($_POST['password']))) : '';
+		($_POST['password']) ? $password = htmlspecialchars(trim($_POST['password'])) : '';
 		$file = $_FILES['file']['name'];
 		$tmp_name = $_FILES['file']['tmp_name'];
-		($_POST['about']) ? $about = htmlspecialchars($mysqli->real_escape_string(trim($_POST['about']))) : '';
+		($_POST['about']) ? $about = htmlspecialchars(trim($_POST['about'])) : '';
 		//создаем ID для нового юзера, берем ID последнего и прибавляем 1
-		$getIdUser = $mysqli->query("SELECT `id` FROM `users` ORDER BY `id` DESC LIMIT 1");
-		$getIdUser = $getIdUser->fetch_assoc();
+		$getIdUser = $db->query("SELECT `id` FROM `users` ORDER BY `id` DESC LIMIT 1");
+		$getIdUser = $getIdUser->fetch();
 		$getIdUser = intval($getIdUser['id']) + 1;
 		$dir_user = "img/avatars/$getIdUser";
 		if(!is_dir($dir_user)){
@@ -32,17 +32,13 @@ if (!empty($_POST['login']) && !empty($_POST['login']) && !empty($_FILES['file']
 		//$mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
     	//$login = $mysqli->query("INSERT INTO `users` VALUES (NULL, '$login', '$name', '$surname', '$age', '$email', '$password', '$file', '$about');");
 		
-		$login = $mysqli->prepare("INSERT INTO `users` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);");
-		$login->bind_param("ississss", $login, $name, $surname, $age, $email, $password, $file, $about);
-		$login->execute();
-		
+		$login = $db->prepare("INSERT INTO `users` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);");
+		$login->execute(array($login, $name, $surname, $age, $email, $password, $file, $about));
 		
     	$_SESSION['msg'] = 'вы успешно зарегились';
     	header("Location: index.php");
 }
-
 ?>
-
 
 <? include('view/header.php');?>
 <div id="templatemo_main">
