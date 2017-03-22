@@ -20,7 +20,7 @@ include_once('header.php');
 					<? $textTags = explode(',', $row['tags']);?>
 					<? $imagePost = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>
 					<h2><a href="article.php?id=<?=$row['idArt']?>"><?=$row['title']?></a></h2>		
-					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$row['alias_cat']?>"><?=$row['name']?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> 
+					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$row['alias_cat']?>"><?=$row['name_cat']?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> 
 					
 					<?if(count($textTags) > 1):?>
 					| Теги: 

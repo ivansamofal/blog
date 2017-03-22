@@ -2,7 +2,7 @@
 include_once('config.php');
 
 if (isset($_GET['id'])) {
-	$id = htmlspecialchars($_GET['id']);
+	$id = htmlspecialchars(($_GET['id']));
 }else{
 	header("location: index.php");
 }

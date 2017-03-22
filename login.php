@@ -51,7 +51,7 @@ $mssg2 = '<a href="index.php">Перейти на главную</a>';
 
 </div>
 
-<? include('/view/sidebar.php');?>
+<? include_once('view/sidebar.php');?>
  <div style="clear: both;"></div>
 </div>
 

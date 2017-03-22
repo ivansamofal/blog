@@ -1,19 +1,29 @@
 <?
 include_once('config.php');
+/*
+function saltGenerator(){
+	$salt = '';
+	$strlenSalt = rand(3, 6);
+	
+	for($i = 0; $i < $strlenSalt; $i++){
+		$salt .= 5; //получить случайный символж
+	}
+	return $salt;
+}
 		
-if (!empty($_POST['login']) && !empty($_POST['login']) && !empty($_FILES['file']['name'])) {
-		//$login = $_POST['login'];
+	$salt = saltGenerator();
+	*/
+	
+if (!empty($_POST['login']) && !empty($_POST['email']) && !empty($_FILES['file']['name'])) {
 		($_POST['login']) ? $login = htmlspecialchars(trim($_POST['login'])) : '';
-		//$name = $_POST['name'];
 		($_POST['name']) ? $name = htmlspecialchars(trim($_POST['name'])) : '';
-		//$surname = $_POST['surname'];
 		($_POST['surname']) ? $surname = htmlspecialchars(trim($_POST['surname'])) : '';
-		//$age = $_POST['age'];
-		($_POST['age']) ? $age = htmlspecialchars(trim($_POST['age'])) : '';
-		//$email = $_POST['email'];
+		($_POST['age']) ? $age = intval(htmlspecialchars(trim($_POST['age']))) : '';
 		($_POST['email']) ? $email = htmlspecialchars(trim($_POST['email'])) : '';
-		//$password = $_POST['password'];
 		($_POST['password']) ? $password = htmlspecialchars(trim($_POST['password'])) : '';
+		
+		$password = md5( $password . $login );
+		
 		$file = $_FILES['file']['name'];
 		$tmp_name = $_FILES['file']['tmp_name'];
 		($_POST['about']) ? $about = htmlspecialchars(trim($_POST['about'])) : '';
@@ -25,15 +35,9 @@ if (!empty($_POST['login']) && !empty($_POST['login']) && !empty($_FILES['file']
 		if(!is_dir($dir_user)){
 			mkdir($dir_user);
 		}
-		move_uploaded_file($tmp_name, "$dir_user/$file");
-		//$mysqli->query("SET names 'cp1251'");
-		//$mysqli->query("SET NAMES 'utf8'"); 
-		//$mysqli->query("SET CHARACTER SET 'utf8'");
-		//$mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
-    	//$login = $mysqli->query("INSERT INTO `users` VALUES (NULL, '$login', '$name', '$surname', '$age', '$email', '$password', '$file', '$about');");
-		
-		$login = $db->prepare("INSERT INTO `users` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);");
-		$login->execute(array($login, $name, $surname, $age, $email, $password, $file, $about));
+		move_uploaded_file($tmp_name, "$dir_user/$file"); //перемещаем картинку в директорию пользователя
+		$loginStmt = $db->prepare("INSERT INTO `users` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)");		 // добавляем данные о пользователе в БД
+		$loginStmt->execute(array($login, $name, $surname, $age, $email, $password, $file, $about));
 		
     	$_SESSION['msg'] = 'вы успешно зарегились';
     	header("Location: index.php");

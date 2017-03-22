@@ -2,15 +2,7 @@
 class to_db2 {
 
     public function five_authors ($db) {
-                   // $mysqli->query("SET names 'cp1251'");
-                    //$mysqli->query("SET NAMES 'utf8'"); 
-                    //mysql_set_charset( 'utf8' );
-                   // $mysqli->query("SET CHARACTER SET 'utf8'");
-                   // $mysqli->query("SET SESSION collation_connection = 'utf8_general_ci'");
-                   /* $authors = $mysqli->query("SELECT count(`articles`.`id_author`), `articles`.`id_author`,  
-						`users`.`name`, `users`.`surname`, `users`.`age` FROM `articles` JOIN `users` 
-					ON `articles`.`id_author` = `users`.`id` GROUP BY `id_author` 
-					ORDER BY count(`id_author`) DESC LIMIT 5;");*/
+                   
 					$authors = $db->query("SELECT count(`articles`.`id_author`), `articles`.`id_author`,  
 						`users`.`name`, `users`.`surname`, `users`.`age` FROM `articles` JOIN `users` 
 					ON `articles`.`id_author` = `users`.`id` GROUP BY `articles`.`id_author` 
@@ -63,10 +55,6 @@ class to_db2 {
 
         public function pagination1 ($db) { //вывод всех новостей на главной 
                 // количество записей, выводимых на странице
-				//$stmt = $db->prepare('SELECT * FROM `articles` WHERE `id` = ? AND `count_like` = ?');
-				//$stmt->execute(array(50, 0));
-				//$rows = $stmt->fetchAll();
-				//var_dump($rows);
                 $per_page=10;
                 // получаем номер страницы
                 if (isset($_GET['page'])) $arr['page']=($_GET['page']-1); else $page=0;
@@ -74,50 +62,19 @@ class to_db2 {
                 $start=abs($arr['page']*$per_page);
                 // составляем запрос и выводим записи
                 // переменную $start используем, как нумератор записей.
-                //$res = $mysqli->query("SELECT count(*) FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` ");
 				$res = $db->prepare('SELECT count(*) FROM `articles` JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` ');
 				$res->execute();
-                //$row2=$res->fetch_row();
 				$row2 = $res->fetch();
 				$total_rows=$row2[0];
-				
-                /*$arr['res'] = $mysqli->query("
-				SELECT `articles`.`id`, `articles`.`title`, `articles`.`text`, `articles`.`time`, `articles`.`id_author`, 
-					`articles`.`date`, `articles`.`img`, `articles`.`stat`, `articles`.`count_like`, `articles`.`category`, 
-					`categories`.`alias_cat`, `articles`.`tags`, `categories`.`id_cat`, `users`.`name`, `users`.`surname`, 
-					`categories`.`alias_cat`, `users`.`age`, `users`.`avatar`, `users`.`id` as `id_user` FROM `articles` 
-				JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` 
-				JOIN `users` ON `articles`.`id_author` = `users`.`id` 
-				ORDER BY `articles`.`id` DESC LIMIT $start,$per_page");*/
 				$arr['res'] = $db->query("SELECT `articles`.`id` as `idArt`, `articles`.`title`, `articles`.`text`, `articles`.`time`, `articles`.`id_author`, 
 					`articles`.`date`, `articles`.`img`, `articles`.`stat`, `articles`.`count_like`, `articles`.`category`, 
 					`categories`.`alias_cat`, `articles`.`tags`, `categories`.`id_cat`, `users`.`name`, `users`.`surname`, 
-					`categories`.`alias_cat`, `users`.`age`, `users`.`avatar`, `users`.`id` as `id_user` FROM `articles` 
+					`categories`.`name` as `name_cat`, `users`.`age`, `users`.`avatar`, `users`.`id` as `id_user` FROM `articles` 
 				JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` 
 				JOIN `users` ON `articles`.`id_author` = `users`.`id` 
 				ORDER BY `articles`.`id` DESC LIMIT $start, $per_page");
-					//$stmt->bindParam(':start', $start);
-					//$stmt->bindParam(':per_page', $per_page);
-					//$stmt->execute(array('start' => $start, 'per_page' => $per_page));
-				/*`articles`.`id`, `articles`.`title`, `articles`.`text`, `articles`.`time`, `articles`.`id_author`, 
-					`articles`.`date`, `articles`.`img`, `articles`.`stat`, `articles`.`count_like`, `articles`.`category`, 
-					`categories`.`alias_cat`, `articles`.`tags`, `categories`.`id_cat`, `users`.`name`, `users`.`surname`, 
-					`categories`.`alias_cat`, `users`.`age`, `users`.`avatar`, `users`.`id` as `id_user` FROM `articles` 
-				JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` 
-				JOIN `users` ON `articles`.`id_author` = `users`.`id` 
-				ORDER BY `articles`.`id` DESC LIMIT :start, :per_page*/
-
-				//	$stmt->execute(array(0, 10));
 				
-				//	$arr['res']->execute(array());
-				//var_dump($stmt);
-				//var_dump($stmt->fetchAll());
-				
-				//var_dump($are);
-				//
                 $arr['num_pages'] = ceil($total_rows/$per_page);
-				//var_dump($arr);
-				
                 return $arr;
         }
 		
@@ -135,7 +92,7 @@ class to_db2 {
 				$res->execute(array($cat));
                 $row2=$res->fetch();
                 $total_rows=$row2[0];
-                $arr['res'] = $db->query("SELECT *, `users`.`id` as `id_user` FROM `articles` 
+                $arr['res'] = $db->query("SELECT *, `users`.`id` as `id_user`, `articles`.`id` as `idArt` FROM `articles` 
 				JOIN `categories` ON `articles`.`category` = `categories`.`id_cat` 
 				AND `categories`.`alias_cat` = '$cat' 
 				JOIN `users` ON `articles`.`id_author` = `users`.`id` 
@@ -152,7 +109,8 @@ class to_db2 {
 			$login->execute(array($enterLogin));
 			$res = $login->fetch();
 			//var_dump($res);
-            if ($res['email'] != $_POST['login'] || $res['password'] != $_POST['password']) {
+           // if ($res['email'] != $_POST['login'] || $res['password'] != $_POST['password']) {
+			if ($res['email'] != $_POST['login'] || $res['password'] != md5($_POST['password'] . $res['login'] )) {
                 if ($res['email'] == $_POST['login']) {
                     $_SESSION['msg'] = 'неправильный пароль';
                 }elseif ($res['email'] != $_POST['login']) {

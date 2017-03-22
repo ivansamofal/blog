@@ -7,7 +7,7 @@ include_once('view/header.php');
 			<? $textTags = explode(',', $row['tags']);?>
 				<div class="post_box">
 					<? $imagePost = ($row['img']) ? $row['img'] : 'no-photo.jpg'; ?>
-					<h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>		
+					<h2><a href="article.php?id=<?=$row['idArt']?>"><?=$row['title']?></a></h2>		
 					<div class="news_meta">Опубликовано: <a href="articles.php?cat=<?=$cat?>"><?=$nameCat?></a>, <?=$row['date']?> в <?=mb_substr($row['time'], 0, 5);?> 
 					<?if(count($textTags) > 1):?>
 					| Теги: 
@@ -19,9 +19,9 @@ include_once('view/header.php');
 					<?endif;?>
 					<span>автор: <a href="user.php?id=<?=$row['id_user']?>"><?=$row['name'] . ' ' . $row['surname']?></a></span>
 					</div>
-					<div class="image_wrapper"><a href="article.php?id=<?=$row['id']?>"><img src="img/<?=$imagePost?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/></a></div>
+					<div class="image_wrapper"><a href="article.php?id=<?=$row['idArt']?>"><img src="img/<?=$imagePost?>" alt="<?=$row['title']?>" title="<?=$row['title']?>"/></a></div>
 				  <p align="justify"><?=$obj1->getDescription($row['text'])?>
-				  <a href="article.php?id=<?=$row['id']?>" class="continue">Продолжить ...</a></p>
+				  <a href="article.php?id=<?=$row['idArt']?>" class="continue">Продолжить ...</a></p>
 				  <div class="cleaner"></div>
 				</div>
 			<? endwhile;?>

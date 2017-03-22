@@ -1,5 +1,5 @@
 <?
-include_once('/view/header.php');
+include_once('header.php');
 ?>
 <div id="templatemo_main">
     <div id="templatemo_content">
@@ -15,4 +15,4 @@ include_once('/view/header.php');
 <div class="cleaner"></div>
 </div>
 <?
-include_once('/view/footer.php');
+include_once('footer.php');

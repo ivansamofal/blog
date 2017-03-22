@@ -16,7 +16,7 @@ if($_GET['cat']){
 //для результатов поиска: если есть поисковый запрос - ищем, если нет - отображаем категорию
 if($_GET['query']){
 		$searchQuery = ($_GET['query']) ? '%' . htmlspecialchars(trim($_GET['query'])) . '%' : '';
-		$getSearch = $db->prepare("SELECT * FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ? OR `tags` LIKE ?");
+		$getSearch = $db->prepare("SELECT *, `articles`.`id` as `idArt` FROM `articles` WHERE `title` LIKE ? OR `text` LIKE ? OR `tags` LIKE ?");
 		$getSearch->execute(array($searchQuery, $searchQuery, $searchQuery));
 		$arr['res']  = $getSearch;
 }else{

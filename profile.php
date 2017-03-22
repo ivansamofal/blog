@@ -19,7 +19,7 @@ if(isset($_POST['submit'])){
 	if (isset($_POST['age'])){
 		$age = htmlspecialchars($_POST['age']);
 		$newName = $db->prepare("UPDATE `users` SET `age` = ? WHERE `id` = ?");
-		$newName->execute(array($age, $id);
+		$newName->execute(array($age, $id));
 	}
 	if (isset($_POST['about'])){
 		$about = htmlspecialchars($_POST['about']);
@@ -33,7 +33,7 @@ if(isset($_POST['submit'])){
 	}
 	if (isset($_POST['password'])){
 		$password = htmlspecialchars($_POST['password']);
-		$newName = $mysqli->query("UPDATE `users` SET `password` = ? WHERE `id` = ?");
+		$newName = $db->prepare("UPDATE `users` SET `password` = ? WHERE `id` = ?");
 		$newName->execute(array($password, $id));
 	}
 	if (isset($_FILES['file']['name']) && mb_strlen($_FILES['file']['name']) > 4 ){
