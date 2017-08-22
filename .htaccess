@@ -1,0 +1,5 @@
+AddDefaultCharset utf-8
+
+
+RewriteCond %{QUERY_STRING} ^id=([0-9]*)$
+RewriteRule ^article\.php$ /article/%1? [L]
